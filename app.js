@@ -18,3 +18,7 @@ var forward = require('./forward.js');
 // instantiate `app` et al
 
 app.use(forward(/\/db\/(.*)/, "https://40a04e93-daf4-47c7-9faa-f25334792d10-bluemix.cloudant.com/home-automation/"));
+
+console.log("Server running on http://localhost:3000.");
+console.log("Home page at http://localhost:3000/index.html. ");
+console.log("Database proxy at http://localhost:3000/db/ (e.g. http://localhost:3000/db/_all_docs to view all database documents).");
