@@ -50,6 +50,12 @@ if (app.get('env') === 'development') {
  
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
+  console.log('Home page at http://localhost:' + app.get('port') + '/index.html. ');
+  console.log('Database proxy at http://localhost:' + app.get('port') + '/db/ (e.g. http://localhost:' + app.get('port') + '/db/_all_docs to view all database documents).');
+
 });
 
+
+
+console.log("Server running on http://localhost:3000.");
 
