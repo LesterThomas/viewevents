@@ -1,20 +1,55 @@
-var express = require('express');
+/**
+ * Module dependencies.
+ */
+
+var express        = require('express'),
+    path           = require('path'),
+    logger         = require('morgan'),
+    bodyParser     = require('body-parser'),
+    compress       = require('compression'),
+    favicon        = require('static-favicon'),
+    methodOverride = require('method-override'),
+    errorHandler   = require('errorhandler'),
+    config         = require('./config'),
+    routes         = require('./routes');
+
+
+
 var app = express();
 
-// The number of milliseconds in one day
-//var oneDay = 86400000;
-
-// Use compress middleware to gzip content
-//app.use(express.compress());
-
-// Serve up content from public directory
-app.use(express.static(__dirname + '/dist')); //, { maxAge: oneDay }));
-
-app.listen(process.env.PORT || 3000);
-
-
+//used for /db proxy
 var forward = require('./forward.js');
 
-// instantiate `app` et al
+/**
+ * Express configuration.
+ */
+app.set('port', config.server.port);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-app.use(forward(/\/db\/(.*)/, "https://40a04e93-daf4-47c7-9faa-f25334792d10-bluemix.cloudant.com/home-automation/"));
+app
+  .use(compress())
+  .use(favicon())
+  .use(logger('dev'))
+  .use(bodyParser())
+  .use(methodOverride())
+  .use(express.static(path.join(__dirname, 'public')))
+  .use(routes.indexRouter)
+  .use(forward(/\/db\/(.*)/, 'https://40a04e93-daf4-47c7-9faa-f25334792d10-bluemix.cloudant.com/home-automation/'))
+  .use(function (req, res) {
+    res.status(404).render('404', {title: 'Not Found :('});
+  });
+
+if (app.get('env') === 'development') {
+  app.use(errorHandler());
+}
+ 
+
+
+ 
+ 
+app.listen(app.get('port'), function () {
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
+
