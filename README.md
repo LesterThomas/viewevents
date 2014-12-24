@@ -23,3 +23,10 @@ To run the server, open two command windows:
 
 The database proxy is to the Cloudant database on Bluemix. Any URL's with /db/ will create a proxy to the database at https://40a04e93-daf4-47c7-9faa-f25334792d10-bluemix.cloudant.com/home-automation/
 
+The format of the database document is:
+
+```
+{"_id":"event:1418052294542","_rev":"1-42345b422221a08b2842ec3a2e34804c","Name":"Kate","Message":"Unregistered"}
+```
+
+The event id is a Javascript `Date.Now()` timestamp.
