@@ -26,7 +26,10 @@ The database proxy is to the Cloudant database on Bluemix. Any URL's with /db/ w
 The format of the database document is:
 
 ```
-{"_id":"event:1418052294542","_rev":"1-42345b422221a08b2842ec3a2e34804c","Name":"Kate","Message":"Unregistered"}
+{"_id":"event:1418052294542",
+	"_rev":"1-42345b422221a08b2842ec3a2e34804c",
+	"Name":"Kate",
+	"Message":"Unregistered"}
 ```
 
 The event id is a Javascript `Date.Now()` timestamp.
