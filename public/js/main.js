@@ -1,16 +1,16 @@
-(function ($) {
-  $(document).ready(function () {
-    // you awesome code goes here
-    var oneWeekAgo;
-    var oneDayAgo;
-	oneWeekAgo=Date.now()-14*24*60*60*1000;
-	oneDayAgo=Date.now()-2*24*60*60*1000;
-	var peopleObject=[{Name:'Lester'},{Name:'Kate'}];
+function showTimeline(startDate, endDate, divContainer)
+{
+
+	var peopleObject=[{Name:'Lester', start:null, end:null, content:null},{Name:'Kate', start:null, end:null, content:null}];
+								
 	var timelineObjectArray=[];
 	var ObjectId=1;
-
+	var queryStartDate;
+	var queryEndDate;
+	queryStartDate=startDate-(18*60*60*1000); // begin query 12 hours before 6 am
+	queryEndDate=endDate+(12*60*60*1000); // end query 12 hours after midnight
 	//alert(oneWeekAgo);
-    $.getJSON( '/db/_all_docs?startkey="event:' + oneWeekAgo + '"&endkey="event:9417996505591"&include_docs=true' , function( indata ) {
+    $.getJSON( '/db/_all_docs?startkey="event:' + startDate + '"&endkey="event:' + endDate + '"&include_docs=true' , function( indata ) {
 			  //alert(JSON.stringify(data));
 			  var jsonEvents=indata;
 			  var eventsArray=jsonEvents.rows;
@@ -41,8 +41,9 @@
 				  		} else {
 				  			
 
-				  			//add if there was a start date
-				  			if (peopleObject[j].start) {
+				  			//only display if there was a start date
+				  			if  (peopleObject[j].start) { 
+				  				
 								peopleObject[j].end=theDate;
 								peopleObject[j].id=ObjectId;
 								ObjectId=ObjectId+1;
@@ -62,7 +63,7 @@
 			  
 			 
 			    // DOM element where the Timeline will be attached
-			    var container = document.getElementById('mytimeline');
+			    var container = document.getElementById(divContainer);
 
 			    // Create a DataSet with data (enables two way data binding)
 			    /*var data = new vis.DataSet([
@@ -78,7 +79,7 @@
 
 
 			    // Configuration for the Timeline
-			    var options = {start:oneDayAgo,end: Date.now(), groupOrder:'content'};
+			    var options = {start:startDate,end: endDate, groupOrder:'content'};
 			    var margin={};
 				margin.item={};
 				margin.item.horizontal=0;
@@ -92,6 +93,29 @@
 				timeline.setItems(items);
 			    //alert(container.innerHTML);
 			});
+}
+
+(function ($) {
+  $(document).ready(function () {
+    // you awesome code goes here
+    var startDate;
+    var endDate;
+    var oneDayInMillis;
+    var dateNow;
+    var startDateNum;
+    var endDateNum;
+    dateNow=new Date();
+	oneDayInMillis=1*24*60*60*1000;
+	startDate=new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 6, 0, 0, 0);
+	endDate=new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 23, 59, 59, 999);
+	startDateNum=startDate.getTime();
+	endDateNum=endDate.getTime();
+
+	for(var x=0;x<7;x++) {
+		showTimeline(startDateNum, endDateNum, 'mytimeline'+x);
+		startDateNum=startDateNum-oneDayInMillis;
+		endDateNum=endDateNum-oneDayInMillis;
+	}
 
   });
 })(jQuery);
