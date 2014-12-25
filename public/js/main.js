@@ -8,7 +8,7 @@
 	var peopleObject=[{Name:'Lester'},{Name:'Kate'}];
 	var timelineObjectArray=[];
 	var ObjectId=1;
-	var currentObject;
+
 	//alert(oneWeekAgo);
     $.getJSON( '/db/_all_docs?startkey="event:' + oneWeekAgo + '"&endkey="event:9417996505591"&include_docs=true' , function( indata ) {
 			  //alert(JSON.stringify(data));
@@ -21,27 +21,29 @@
 			  	var eventDate=eventId.split(':').pop();
 			  	var eventDataObj=new Date(parseInt(eventDate));
 			  	var theDate=eventDataObj.toString();
-			  	for (j=0;j<peopleObject.length;j++) {
+			  	for (var j=0;j<peopleObject.length;j++) {
 
 
 				  	//if registered, create new object
-				  	if (eventsArray[i].doc.Name==peopleObject[j].Name) {
-				  		currentObject=peopleObject[j];
-				  		if (eventsArray[i].doc.Message=='Registered') {
+				  	if (eventsArray[i].doc.Name===peopleObject[j].Name) {
+				  		
+				  		if (eventsArray[i].doc.Message==='Registered') {
 
-				  			currentObject.start=theDate;
-				  			currentObject.content=currentObject.Name;
+				  			peopleObject[j].start=theDate;
+				  			peopleObject[j].content=peopleObject[j].Name;
 
 				  		} else {
 				  			
 
 				  			//add if there was a start date
-				  			if (currentObject.start) {
-								currentObject.end=theDate;
-								currentObject.id=ObjectId;
+				  			if (peopleObject[j].start) {
+								peopleObject[j].end=theDate;
+								peopleObject[j].id=ObjectId;
 								ObjectId=ObjectId+1;
-								var newObject={id:currentObject.id, content:currentObject.content, start:currentObject.start, end: currentObject.end };
-
+								var newObject={id:peopleObject[j].id, content:peopleObject[j].content, start:peopleObject[j].start, end: peopleObject[j].end, group:peopleObject[j].Name };
+								peopleObject[j].start=null;
+								peopleObject[j].end=null;
+								peopleObject[j].content=null;
 								timelineObjectArray.push(newObject);
 				  			}
 				  		}
@@ -67,8 +69,13 @@
 			    ]);*/
 				var data = new vis.DataSet(timelineObjectArray);
 
+
+
 			    // Configuration for the Timeline
-			    var options = {start:oneDayAgo,end: Date.now()};
+			    var options = {start:oneDayAgo,end: Date.now(), groupOrder:'content'};
+			    var margin={};
+				margin.item=1;
+				options.margin=margin;
 			    //alert(container.innerHTML);
 			    // Create a Timeline
 			    var timeline = new vis.Timeline(container, data, options);
