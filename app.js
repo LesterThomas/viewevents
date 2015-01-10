@@ -57,5 +57,4 @@ app.listen(app.get('port'), function () {
 
 
 
-console.log("Server running on http://localhost:3000.");
 
