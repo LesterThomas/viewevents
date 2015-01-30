@@ -35,7 +35,9 @@ app
   .use(methodOverride())
   .use(express.static(path.join(__dirname, 'public')))
   .use(routes.indexRouter)
-  .use(forward(/\/db\/(.*)/, 'https://40a04e93-daf4-47c7-9faa-f25334792d10-bluemix.cloudant.com/home-automation/'))
+  //.use(forward(/\/db\/(.*)/, 'https://40a04e93-daf4-47c7-9faa-f25334792d10-bluemix.cloudant.com/home-automation/'))
+  .use(forward(/\/db\/(.*)/, 'http://192.168.1.96:5984/home_automation/'))
+  
   .use(function (req, res) {
     res.status(404).render('404', {title: 'Not Found :('});
   });
@@ -54,6 +56,7 @@ app.listen(app.get('port'), function () {
   console.log('Database proxy at http://localhost:' + app.get('port') + '/db/ (e.g. http://localhost:' + app.get('port') + '/db/_all_docs to view all database documents).');
 
 });
+
 
 
 
